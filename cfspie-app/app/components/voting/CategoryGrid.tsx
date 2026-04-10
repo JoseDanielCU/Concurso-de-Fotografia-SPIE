@@ -13,9 +13,21 @@ export default function CategoryGrid({ categories, phase }: Props) {
   const [votedCategories, setVotedCategories] = useState<string[]>([])
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setVotedCategories(getVotedCategories())
-  }, [])
+  async function fetchVotes() {
+    const token = localStorage.getItem('voterToken')
+
+    if (!token) return
+
+    const res = await fetch(`/api/votes?voterToken=${token}`)
+    const data = await res.json()
+
+    const categoryIds = data.map((v: any) => v.category_id)
+
+    setVotedCategories(categoryIds)
+  }
+
+  fetchVotes()
+}, [])
 
   if (categories.length === 0) {
     return (
