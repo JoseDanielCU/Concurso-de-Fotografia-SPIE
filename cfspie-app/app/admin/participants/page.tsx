@@ -27,7 +27,6 @@ export default function AdminParticipants() {
   setParticipants(await partsRes.json())
   const votes = await votesRes.json()
 
-  // 👇 agrupar votos por participante
   const grouped = votes.reduce((acc: any, v: any) => {
     acc[v.participant_id] = (acc[v.participant_id] || 0) + 1
     return acc

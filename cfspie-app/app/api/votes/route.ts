@@ -1,19 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createSupabaseAdminClient } from '../../lib/supabase'
 
-export async function GET() {
-  const supabase = createSupabaseAdminClient();
+export async function GET(req: NextRequest) {
+  const supabase = createSupabaseAdminClient()
 
-  const { data, error } = await supabase
-    .from("votes")
-    .select("*");
+  const { searchParams } = new URL(req.url)
+  const voterToken = searchParams.get('voterToken')
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  // 🔥 CASO 1: usuario normal
+  if (voterToken) {
+    const { data, error } = await supabase
+      .from('votes')
+      .select('category_id')
+      .eq('voter_token', voterToken)
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+
+    return NextResponse.json(data)
   }
 
-  return NextResponse.json(data);
+  // 🔥 CASO 2: admin (sin filtro)
+  const { data, error } = await supabase
+    .from('votes')
+    .select('*')
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  return NextResponse.json(data)
 }
+
 export async function POST(req: NextRequest) {
 
   try {
