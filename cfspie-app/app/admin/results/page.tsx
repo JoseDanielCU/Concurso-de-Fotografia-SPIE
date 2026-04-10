@@ -215,7 +215,7 @@ export default function AdminResults() {
                         {getVotes(p.id)} votos
                       </span>
 
-                      {(phase === 2 || phase === 'results') && p.is_finalist && (
+                      {(phase === 2 || phase === 3) && p.is_finalist && (
                         p.is_phase2_winner ? (
                           <button
                             onClick={() => clearWinner(p.id)}

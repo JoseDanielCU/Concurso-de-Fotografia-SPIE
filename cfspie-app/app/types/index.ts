@@ -1,4 +1,4 @@
-export type Phase = 1 | 2 | 'results';
+export type Phase = 1 | 2 | 3;
 
 export interface Settings {
   id: string;

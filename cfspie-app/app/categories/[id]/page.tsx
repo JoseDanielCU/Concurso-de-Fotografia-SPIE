@@ -118,7 +118,7 @@ export default async function CategoryPage({ params }: PageProps) {
           />
         )}
 
-        {phase === "results" && (
+        {phase === 3 && (
           <ResultsView
             participants={voteCounts}
             finalistsCount={category.phase1_finalists_count}

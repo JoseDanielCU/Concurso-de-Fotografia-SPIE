@@ -99,7 +99,7 @@ export default function CategoryGrid({ categories, phase }: Props) {
                 {phase === 1 && !hasVoted && 'Ver fotos y votar →'}
                 {phase === 1 && hasVoted && 'Ver tu voto →'}
                 {phase === 2 && 'Ver finalistas →'}
-                {phase === 'results' && 'Ver ganador →'}
+                {phase === 3 && 'Ver ganador →'}
               </span>
             </div>
           </Link>

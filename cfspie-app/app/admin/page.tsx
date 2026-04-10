@@ -5,14 +5,14 @@ import styles from './page.module.css'
 const PHASE_LABELS: Record<Phase, string> = {
   1: 'Fase 1 — Votación Pública',
   2: 'Fase 2 — Selección Final',
-  results: 'Resultados Finales',
+  3: 'Resultados Finales',
 }
 
-const PHASE_ORDER: Phase[] = [1, 2, 'results']
+const PHASE_ORDER: Phase[] = [1, 2, 3]
 
 const PHASE_NEXT: Partial<Record<Phase, Phase>> = {
   1: 2,
-  2: 'results',
+  2: 3,
 }
 
 
@@ -178,7 +178,7 @@ export default function AdminDashboard() {
           </button>
         )}
 
-        {phase === 'results' && (
+        {phase === 3 && (
           <p className="text-green-400 text-sm mt-4">
             ✓ Concurso finalizado
           </p>
