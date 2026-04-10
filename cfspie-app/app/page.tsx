@@ -2,7 +2,6 @@ import { createSupabaseAdminClient } from "./lib/supabase";
 import { Category, Settings } from "./types";
 import CategoryGrid from "./components/voting/CategoryGrid";
 import Phasebanner from "./components/ui/Phasebanner";
-import SiteHeader from "./components/ui/SiteHeader";
 
 export const revalidate = 30;
 
@@ -29,9 +28,7 @@ export default async function HomePage() {
   const phase = settings?.current_phase ?? 1;
 
   return (
-    <main className="min-h-screen bg-[#0a0a0f] overflow-x-hidden">
-      <SiteHeader />
-
+    <main className="min-h-screen w-full overflow-x-hidden bg-[#0a0a0f] flex flex-col items-center">
       {/* Hero Section - Versión más robusta contra superposiciones y desapariciones */}
       <section className="relative pt-24 md:pt-28 pb-12 md:pb-20 px-4 sm:px-6 overflow-hidden">
 

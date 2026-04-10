@@ -1,12 +1,11 @@
 import { createSupabaseAdminClient } from "../../lib/supabase";
-import {Category, Phase, Settings, VoteCount} from "../../types";
+import {Category, Settings, VoteCount} from "../../types";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import VotingGrid from "../../components/voting/VotingGrid";
 import Phase2View from "../../components/voting/Phase2View";
 import ResultsView from "../../components/results/ResultView";
-import SiteHeader from "../../components/ui/SiteHeader";
 
 export const revalidate = 15;
 
@@ -42,8 +41,7 @@ export default async function CategoryPage({ params }: PageProps) {
 
   const phase = settings?.current_phase
   return (
-    <main className="min-h-screen bg-[#0a0a0f]">
-      <SiteHeader />
+    <main className="min-h-screen w-full overflow-x-hidden bg-[#0a0a0f] flex flex-col items-center">
 
       <div className="max-w-6xl mx-auto px-4 pt-24 pb-24">
         {/* Back */}

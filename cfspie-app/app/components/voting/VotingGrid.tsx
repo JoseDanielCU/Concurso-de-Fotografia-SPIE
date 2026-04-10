@@ -19,6 +19,7 @@ export default function VotingGrid({ participants, categoryId, hasVoted: initial
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
   console.log("PARTICIPANTS:", participants)
   async function handleVote() {
     if (!selected || hasVoted || loading) return
@@ -56,6 +57,7 @@ export default function VotingGrid({ participants, categoryId, hasVoted: initial
 
 
   return (
+
     <div>
       {success && (
         <div className="mb-4 p-3 rounded-lg bg-green-600/20 text-green-400 flex items-center gap-2">
@@ -85,10 +87,14 @@ export default function VotingGrid({ participants, categoryId, hasVoted: initial
             {/* IMAGE */}
             <div className="relative aspect-square">
               <img
-                src={p.photo_url}
-                alt={p.name}
-                className="w-full h-full object-cover"
-              />
+            src={p.photo_url}
+            alt={p.name}
+            onClick={(e) => {
+              e.stopPropagation()
+              setSelectedImage(p.photo_url)
+            }}
+            className="w-full h-full object-cover cursor-zoom-in transition-transform duration-300 hover:scale-105"
+          />
 
               {selected === p.id && (
                 <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
@@ -127,6 +133,8 @@ export default function VotingGrid({ participants, categoryId, hasVoted: initial
           <span>✓</span> Ya votaste en esta categoría.
         </div>
       )}
+
     </div>
+
   )
 }

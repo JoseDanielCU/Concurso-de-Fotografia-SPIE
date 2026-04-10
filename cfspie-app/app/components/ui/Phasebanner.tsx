@@ -7,12 +7,12 @@ interface Props {
 }
 
 const phaseInfo: Record<Phase, { label: string; desc: string; class: string }> = {
-  phase1: {
+  1: {
     label: 'Fase 1 — Votación Pública',
     desc: 'Vota por tu foto favorita en cada categoría. Solo puedes votar una vez por categoría.',
     class: 'phase1',
   },
-  phase2: {
+  2: {
     label: 'Fase 2 — Selección Final',
     desc: 'La votación pública ha cerrado. El jurado está seleccionando los ganadores finales.',
     class: 'phase2',

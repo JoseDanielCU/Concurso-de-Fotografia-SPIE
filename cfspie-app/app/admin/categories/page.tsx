@@ -51,13 +51,17 @@ export default function AdminCategories() {
     setSaving(true)
     setError(null)
     try {
-      const url = editingId ? `/api/categories/${editingId}` : '/api/categories'
-      const method = editingId ? 'PATCH' : 'POST'
+      const url = '/api/categories';
+      const method = 'PATCH';
+
       const res = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: editingId,   // 👈 CLAVE
+          ...form
+        }),
+      });
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
       setShowForm(false)
@@ -75,35 +79,44 @@ export default function AdminCategories() {
     load()
   }
 async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
-  const file = e.target.files?.[0]
-  if (!file) return
+  const file = e.target.files?.[0];
+  if (!file) return;
 
-  setSaving(true)
+  setSaving(true);
 
   try {
-    const fileName = `${Date.now()}-${file.name}`
+    const fileName = `${Date.now()}-${file.name}`;
 
-    const res = await fetch('/api/upload', {
+    // 1. pedir signed URL
+    const res = await fetch('/api/uploadcategory', {
       method: 'POST',
-      body: JSON.stringify({ fileName, fileType: file.type }),
-    })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fileName,
+        fileType: file.type,
+        bucket: 'categories',
+      }),
+    });
 
-    const { uploadUrl, publicUrl } = await res.json()
+    const { uploadUrl, publicUrl } = await res.json();
 
-    // subir archivo directamente
+    // 2. subir archivo
     await fetch(uploadUrl, {
       method: 'PUT',
       headers: { 'Content-Type': file.type },
       body: file,
-    })
+    });
 
-    // guardar URL en form
-    setForm(f => ({ ...f, photo_url: publicUrl }))
+    // 3. guardar en el campo correcto
+    setForm(f => ({
+      ...f,
+      cover_image_url: publicUrl,
+    }));
 
   } catch (err) {
-    console.error(err)
+    console.error(err);
   } finally {
-    setSaving(false)
+    setSaving(false);
   }
 }
   return (
