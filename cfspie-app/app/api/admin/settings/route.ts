@@ -9,21 +9,34 @@ export async function GET() {
     .select('*')
     .single()
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error || !data) {
+    return NextResponse.json(
+      { error: error?.message || 'No se pudo obtener la configuración' },
+      { status: 500 }
+    )
   }
 
   return NextResponse.json(data)
 }
+
 export async function PATCH(req: NextRequest) {
   const admin = createSupabaseAdminClient()
   const body = await req.json()
 
-  const { data: current } = await admin
+  // Obtener configuración actual
+  const { data: current, error: currentError } = await admin
     .from('settings')
     .select('id')
     .single()
 
+  if (currentError || !current) {
+    return NextResponse.json(
+      { error: currentError?.message || 'Configuración no encontrada' },
+      { status: 500 }
+    )
+  }
+
+  // Actualizar configuración
   const { data, error } = await admin
     .from('settings')
     .update({
@@ -34,9 +47,12 @@ export async function PATCH(req: NextRequest) {
     .select()
     .single()
 
-  if (error) {
+  if (error || !data) {
     console.error('SETTINGS PATCH ERROR:', error)
-    return NextResponse.json({ error: error.message }, { status: 400 })
+    return NextResponse.json(
+      { error: error?.message || 'Error al actualizar configuración' },
+      { status: 400 }
+    )
   }
 
   return NextResponse.json(data)

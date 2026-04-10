@@ -57,12 +57,13 @@ export default function VotingGrid({
     }
   }
 
-  // Glitch effect en nombre seleccionado
+  // Glitch effect
   useEffect(() => {
     if (!selectedParticipant || hasVoted) {
       setGlitchText(selectedParticipant?.name ?? '')
       return
     }
+
     const chars = '█▓▒░<>/\\[]{}—=+*#@$%&?'
     const interval = setInterval(() => {
       const corrupted = Array.from({ length: selectedParticipant.name.length })
@@ -70,6 +71,7 @@ export default function VotingGrid({
         .join('')
       setGlitchText(corrupted)
     }, 50)
+
     return () => clearInterval(interval)
   }, [selectedParticipant, hasVoted])
 
@@ -84,7 +86,7 @@ export default function VotingGrid({
 
   return (
     <div>
-      {/* Mensajes de feedback */}
+      {/* Feedback */}
       {success && (
         <div style={{
           marginBottom: '1.5rem', padding: '0.75rem 1rem', borderRadius: '0.75rem',
@@ -95,6 +97,7 @@ export default function VotingGrid({
           <span>¡Voto registrado! Gracias por participar.</span>
         </div>
       )}
+
       {error && (
         <div style={{
           marginBottom: '1.5rem', padding: '0.75rem 1rem', borderRadius: '0.75rem',
@@ -105,14 +108,13 @@ export default function VotingGrid({
         </div>
       )}
 
-      {/* Instrucción */}
       {!hasVoted && (
         <p style={{ fontSize: '0.875rem', color: '#6b6b8a', marginBottom: '1.5rem', textAlign: 'center' }}>
           Selecciona una foto y confirma tu voto.
         </p>
       )}
 
-      {/* Grid */}
+      {/* GRID LIMPIO */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
         {participants.map((p) => {
           const isSelected = selected === p.id
@@ -120,6 +122,7 @@ export default function VotingGrid({
           return (
             <div
               key={p.id}
+              onClick={() => handleSelect(p.id)}
               style={{
                 borderRadius: '1rem',
                 overflow: 'hidden',
@@ -128,117 +131,93 @@ export default function VotingGrid({
                   ? '2px solid #6366f1'
                   : '1px solid rgba(255,255,255,0.06)',
                 transform: isSelected ? 'scale(1.02)' : 'scale(1)',
-                transition: 'border 0.15s, transform 0.15s, box-shadow 0.15s',
+                transition: 'all 0.15s ease',
                 boxShadow: isSelected ? '0 0 20px rgba(99,102,241,0.25)' : 'none',
-                display: 'flex',
-                flexDirection: 'column',
+                cursor: hasVoted ? 'default' : 'pointer',
               }}
             >
-              {/* Foto — clickeable en desktop */}
               <div
                 style={{
                   position: 'relative',
+                  width: '100%',
                   aspectRatio: '1 / 1',
-                  cursor: hasVoted ? 'default' : 'pointer',
                 }}
-                onClick={() => handleSelect(p.id)}
               >
                 <img
                   src={p.photo_url}
-                  alt={p.name}
+                  alt=""
                   style={{
-                    width: '100%', height: '100%', objectFit: 'cover',
-                    display: 'block', pointerEvents: 'none',
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    display: 'block',
                   }}
                   draggable={false}
                 />
 
-                {/* Overlay seleccionado */}
                 {isSelected && (
                   <div style={{
-                    position: 'absolute', inset: 0,
+                    position: 'absolute',
+                    inset: 0,
                     background: 'rgba(99,102,241,0.25)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    pointerEvents: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}>
                     <div style={{
-                      width: '2.5rem', height: '2.5rem', borderRadius: '50%',
-                      background: '#6366f1', display: 'flex', alignItems: 'center',
-                      justifyContent: 'center', boxShadow: '0 4px 20px rgba(99,102,241,0.5)',
+                      width: '2.5rem',
+                      height: '2.5rem',
+                      borderRadius: '50%',
+                      background: '#6366f1',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 4px 20px rgba(99,102,241,0.5)',
                     }}>
                       <span style={{ color: 'white', fontSize: '1.1rem' }}>✓</span>
                     </div>
                   </div>
                 )}
 
-                {/* Botón zoom */}
                 <button
                   type="button"
-                  onClick={(e) => { e.stopPropagation(); setLightboxUrl(p.photo_url) }}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setLightboxUrl(p.photo_url)
+                  }}
                   style={{
-                    position: 'absolute', top: '0.5rem', right: '0.5rem',
-                    width: '2rem', height: '2rem', borderRadius: '0.5rem',
-                    background: 'rgba(0,0,0,0.7)', border: 'none',
-                    color: 'rgba(255,255,255,0.8)', cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '0.875rem', touchAction: 'manipulation',
-                    WebkitTapHighlightColor: 'transparent',
-                  } as React.CSSProperties}
-                  aria-label="Ver foto ampliada"
+                    position: 'absolute',
+                    top: '0.5rem',
+                    right: '0.5rem',
+                    width: '2rem',
+                    height: '2rem',
+                    borderRadius: '0.5rem',
+                    background: 'rgba(0,0,0,0.7)',
+                    border: 'none',
+                    color: 'rgba(255,255,255,0.8)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.875rem',
+                  }}
                 >
                   ⤢
                 </button>
 
-                {/* Tag "Tu voto" */}
                 {hasVoted && isSelected && (
                   <div style={{
-                    position: 'absolute', bottom: 0, left: 0, right: 0,
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
                     background: 'linear-gradient(to top, rgba(49,46,129,0.9), transparent)',
-                    padding: '0.5rem 0.75rem', pointerEvents: 'none',
+                    padding: '0.5rem 0.75rem',
                   }}>
-                    <span style={{ fontSize: '0.75rem', color: '#a5b4fc' }}>Tu voto</span>
+                    <span style={{ fontSize: '0.75rem', color: '#a5b4fc' }}>
+                      Tu voto
+                    </span>
                   </div>
-                )}
-              </div>
-
-              {/* Nombre + botón Seleccionar */}
-              <div style={{ padding: '0.625rem 0.75rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <p style={{
-                  fontSize: '0.8125rem', fontWeight: 500,
-                  color: 'rgba(255,255,255,0.9)',
-                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', margin: 0,
-                }}>
-                  {p.name}
-                </p>
-
-                {/* Botón "Seleccionar" — visible solo en móvil (oculto en sm+) */}
-                {!hasVoted && (
-                  <button
-                    type="button"
-                    onClick={() => handleSelect(p.id)}
-                    style={{
-                      touchAction: 'manipulation',
-                      WebkitTapHighlightColor: 'transparent',
-                      width: '100%',
-                      padding: '0.5rem',
-                      borderRadius: '0.5rem',
-                      border: isSelected
-                        ? '1px solid rgba(99,102,241,0.5)'
-                        : '1px solid rgba(255,255,255,0.1)',
-                      background: isSelected
-                        ? 'rgba(99,102,241,0.15)'
-                        : 'rgba(255,255,255,0.04)',
-                      color: isSelected ? '#a5b4fc' : 'rgba(255,255,255,0.4)',
-                      fontSize: '0.75rem',
-                      fontWeight: 600,
-                      letterSpacing: '0.04em',
-                      cursor: 'pointer',
-                      transition: 'all 0.15s',
-                    } as React.CSSProperties}
-                    className="sm:hidden"
-                  >
-                    {isSelected ? '✓ Seleccionado' : 'Seleccionar'}
-                  </button>
                 )}
               </div>
             </div>
@@ -246,12 +225,14 @@ export default function VotingGrid({
         })}
       </div>
 
-      {/* Panel de confirmación */}
+      {/* Confirmación */}
       {!hasVoted && (
-        <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+        <div style={{ marginTop: '2rem', textAlign: 'center' }}>
           <p style={{
-            fontSize: '0.875rem', color: '#6b6b8a', textAlign: 'center',
-            fontFamily: 'monospace', letterSpacing: '0.05em', minHeight: '1.25rem',
+            fontSize: '0.875rem',
+            color: '#6b6b8a',
+            fontFamily: 'monospace',
+            minHeight: '1.25rem',
           }}>
             {selectedParticipant
               ? `Seleccionaste: ${glitchText}`
@@ -259,46 +240,20 @@ export default function VotingGrid({
           </p>
 
           <button
-            type="button"
             onClick={handleVote}
             disabled={!selected || loading}
             style={{
-              touchAction: 'manipulation',
-              WebkitTapHighlightColor: 'transparent',
-              width: '100%', maxWidth: '20rem',
+              marginTop: '1rem',
               padding: '0.875rem 1.5rem',
               borderRadius: '1rem',
               border: 'none',
               background: selected && !loading ? '#4f46e5' : 'rgba(255,255,255,0.05)',
               color: selected && !loading ? 'white' : 'rgba(255,255,255,0.25)',
-              fontSize: '0.875rem', fontWeight: 600, letterSpacing: '0.05em',
               cursor: selected && !loading ? 'pointer' : 'not-allowed',
-              transition: 'all 0.2s',
-              boxShadow: selected && !loading ? '0 4px 24px rgba(79,70,229,0.35)' : 'none',
-            } as React.CSSProperties}
+            }}
           >
-            {loading ? (
-              <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                <span style={{
-                  width: '1rem', height: '1rem',
-                  border: '2px solid rgba(255,255,255,0.3)',
-                  borderTopColor: 'white', borderRadius: '50%',
-                  display: 'inline-block', animation: 'spin 0.7s linear infinite',
-                }} />
-                Enviando...
-              </span>
-            ) : 'Confirmar voto →'}
+            {loading ? 'Enviando...' : 'Confirmar voto →'}
           </button>
-        </div>
-      )}
-
-      {/* Ya votó */}
-      {hasVoted && !success && (
-        <div style={{
-          marginTop: '2rem', textAlign: 'center', color: '#34d399',
-          fontSize: '0.875rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem',
-        }}>
-          <span>✓</span> Ya votaste en esta categoría.
         </div>
       )}
 
@@ -308,38 +263,16 @@ export default function VotingGrid({
           onClick={() => setLightboxUrl(null)}
           style={{
             position: 'fixed', inset: 0, zIndex: 50,
-            background: 'rgba(0,0,0,0.92)', backdropFilter: 'blur(8px)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem',
-            touchAction: 'manipulation',
+            background: 'rgba(0,0,0,0.92)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}
         >
           <img
             src={lightboxUrl}
-            alt="Foto ampliada"
-            style={{
-              maxWidth: '100%', maxHeight: '90vh', borderRadius: '1rem',
-              objectFit: 'contain', boxShadow: '0 25px 60px rgba(0,0,0,0.6)',
-              pointerEvents: 'none',
-            }}
+            style={{ maxWidth: '100%', maxHeight: '90vh', borderRadius: '1rem' }}
           />
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); setLightboxUrl(null) }}
-            style={{
-              position: 'absolute', top: '1rem', right: '1rem',
-              width: '2.5rem', height: '2.5rem', borderRadius: '50%',
-              background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)',
-              color: 'white', fontSize: '1.25rem', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              touchAction: 'manipulation',
-            } as React.CSSProperties}
-          >
-            ×
-          </button>
         </div>
       )}
-
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   )
 }

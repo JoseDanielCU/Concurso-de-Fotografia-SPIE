@@ -3,12 +3,14 @@ import styles from './ResultsView.module.css'
 
 interface Props {
   participants: VoteCount[]
+    finalistsCount: number
+
 }
 
 export default function ResultsView({ participants }: Props) {
   const winner = participants.find(p => p.is_phase2_winner)
   const finalists = participants.filter(p => p.is_finalist && !p.is_phase2_winner)
-    .sort((a, b) => b.votes_phase1 - a.votes_phase1)
+    .sort((a, b) => b.vote_count - a.vote_count)
 
   return (
     <div className={styles.wrap}>
@@ -25,7 +27,7 @@ export default function ResultsView({ participants }: Props) {
             </div>
             <div className={styles.winnerBody}>
               <h3 className={styles.winnerName}>{winner.name}</h3>
-              <span className={styles.winnerVotes}>{winner.votes_phase1} votos</span>
+              <span className={styles.winnerVotes}>{winner.vote_count} votos</span>
             </div>
           </div>
         </div>
@@ -42,7 +44,7 @@ export default function ResultsView({ participants }: Props) {
                 <img src={p.photo_url} alt={p.name} className={styles.finalistImage} />
                 <div className={styles.finalistBody}>
                   <span className={styles.finalistName}>{p.name}</span>
-                  <span className={styles.finalistVotes}>{p.votes_phase1} votos</span>
+                  <span className={styles.finalistVotes}>{p.vote_count} votos</span>
                 </div>
               </div>
             ))}

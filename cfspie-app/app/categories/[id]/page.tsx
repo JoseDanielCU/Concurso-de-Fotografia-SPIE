@@ -1,5 +1,5 @@
 import { createSupabaseAdminClient } from "../../lib/supabase";
-import { Category, Settings, VoteCount } from "../../types";
+import { Category, Settings, VoteCount, Participant } from "../../types";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -10,29 +10,46 @@ import ResultsView from "../../components/results/ResultView";
 export const revalidate = 15;
 
 interface PageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 async function getData(id: string) {
   const supabase = createSupabaseAdminClient();
 
-  const [{ data: category }, { data: settings }, { data: voteCounts }] =
+  const [{ data: category }, { data: settings }, { data: rawParticipants }] =
     await Promise.all([
       supabase.from("categories").select("*").eq("id", id).single(),
       supabase.from("settings").select("*").single(),
       supabase.from("participants").select("*").eq("category_id", id),
     ]);
 
+  const participants: Participant[] = rawParticipants ?? [];
+
+  // 🔥 Generamos VoteCount compatible para fases 2 y results
+  const voteCounts: VoteCount[] = (rawParticipants ?? []).map((p: any) => ({
+    participant_id: p.id,
+    name: p.name,
+    photo_url: p.photo_url,
+    category_id: p.category_id,
+    is_finalist: p.is_finalist ?? false,
+    is_phase2_winner: p.is_phase2_winner ?? false,
+    category_name: category?.name ?? "",
+    category_slug: category?.slug ?? "",
+    vote_count: 0, // placeholder (puedes reemplazar con query real)
+  }));
+
   return {
     category: category as Category | null,
     settings: settings as Settings | null,
-    voteCounts: (voteCounts as VoteCount[]) ?? [],
+    participants,
+    voteCounts,
   };
 }
 
 export default async function CategoryPage({ params }: PageProps) {
-  const resolvedParams = await params;
-  const { category, settings, voteCounts } = await getData(resolvedParams.id);
+  const { id } = await params;
+
+  const { category, settings, participants, voteCounts } = await getData(id);
 
   if (!category || !category.is_active) notFound();
 
@@ -47,8 +64,7 @@ export default async function CategoryPage({ params }: PageProps) {
           href="/"
           className="inline-flex items-center gap-2 text-sm text-[#6b6b8a]
                      hover:text-white transition-colors mb-8 sm:mb-10
-                     -ml-0.5 group"
-          style={{ WebkitTapHighlightColor: 'transparent' }}
+                     group"
         >
           <ArrowLeft
             size={15}
@@ -59,24 +75,24 @@ export default async function CategoryPage({ params }: PageProps) {
 
         {/* Header */}
         <div className="mb-10 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2 leading-tight">
+          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
             {category.name}
           </h1>
+
           {category.description && (
-            <p className="text-[#6b6b8a] text-base sm:text-lg leading-relaxed max-w-2xl">
+            <p className="text-[#6b6b8a] text-base sm:text-lg max-w-2xl">
               {category.description}
             </p>
           )}
 
           {/* Meta */}
           <div className="mt-5 flex flex-wrap items-center gap-3">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full
-                             bg-white/5 border border-white/8 text-xs text-[#6b6b8a]">
-              {voteCounts.length} participante{voteCounts.length !== 1 ? "s" : ""}
+            <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-[#6b6b8a]">
+              {participants.length} participante{participants.length !== 1 ? "s" : ""}
             </span>
+
             {phase === 1 && category.phase1_finalists_count && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full
-                               bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-400">
+              <span className="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-400">
                 Top {category.phase1_finalists_count} pasan a la siguiente fase
               </span>
             )}
@@ -84,22 +100,24 @@ export default async function CategoryPage({ params }: PageProps) {
         </div>
 
         {/* Divider */}
-        <div className="h-px bg-gradient-to-r from-white/8 via-white/4 to-transparent mb-10" />
+        <div className="h-px bg-gradient-to-r from-white/10 to-transparent mb-10" />
 
         {/* Phase content */}
         {phase === 1 && (
           <VotingGrid
-            participants={voteCounts}
+            participants={participants}
             categoryId={category.id}
             hasVoted={false}
           />
         )}
+
         {phase === 2 && (
           <Phase2View
             participants={voteCounts}
             finalistsCount={category.phase1_finalists_count}
           />
         )}
+
         {phase === "results" && (
           <ResultsView
             participants={voteCounts}
