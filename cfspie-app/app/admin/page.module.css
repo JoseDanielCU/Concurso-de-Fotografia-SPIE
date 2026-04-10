@@ -1,0 +1,166 @@
+.header {
+  margin-bottom: 36px;
+}
+
+.title {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.statCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.statIcon {
+  font-size: 20px;
+  color: var(--accent);
+}
+
+.statValue {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.phaseCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+}
+
+.phaseHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.phaseTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.phaseTimeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 28px;
+}
+
+.timelineStep {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-left: 2px solid var(--border);
+  padding-left: 20px;
+  position: relative;
+  color: var(--text-dim);
+}
+
+.timelineStep:last-child {
+  border-left-color: transparent;
+}
+
+.timelineDot {
+  position: absolute;
+  left: -10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 2px solid var(--border);
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+}
+
+.timelineStep.active .timelineDot {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0a0a0a;
+}
+
+.timelineStep.active .timelineLabel {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.timelineStep.completed .timelineDot {
+  background: var(--green);
+  border-color: var(--green);
+  color: #0a0a0a;
+}
+
+.timelineStep.completed .timelineLabel {
+  color: var(--text-muted);
+}
+
+.timelineLabel {
+  font-size: 14px;
+}
+
+.advanceWrap {
+  padding: 20px;
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.advanceWarning {
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 400px;
+}
+
+.finalNote {
+  font-size: 14px;
+  color: var(--green);
+  padding: 16px;
+  text-align: center;
+}
+
+.loading {
+  padding: 40px;
+  color: var(--text-muted);
+}
