@@ -49,7 +49,7 @@ export default function AdminResults() {
       fetch(`/api/participants/${p.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ is_phase2_finalist: true }),
+        body: JSON.stringify({ is_finalist: true }),
       })
     ))
 

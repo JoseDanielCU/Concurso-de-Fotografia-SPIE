@@ -28,49 +28,66 @@ export default async function HomePage() {
   const phase = settings?.current_phase ?? 1;
 
   return (
-    <main className="min-h-screen w-full overflow-x-hidden bg-[#0a0a0f] flex flex-col items-center">
-      {/* Hero Section - Versión más robusta contra superposiciones y desapariciones */}
-      <section className="relative pt-24 md:pt-28 pb-12 md:pb-20 px-4 sm:px-6 overflow-hidden">
+    <main className="min-h-screen w-full overflow-x-hidden bg-[#080810]">
+      {/* ── Hero ── */}
+      <section className="relative pt-20 pb-16 px-4 sm:px-6 overflow-hidden">
+        {/* Background effects */}
+        <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/20 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px]
+                        bg-indigo-700/10 rounded-full blur-3xl pointer-events-none" />
 
-        {/* Fondo degradado sutil */}
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/30 via-transparent to-transparent pointer-events-none" />
+        {/* Subtle grid texture */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.03]"
+          style={{
+            backgroundImage: `linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)`,
+            backgroundSize: '40px 40px',
+          }}
+        />
 
-        {/* Orb decorativo (más pequeño y controlado) */}
-        <div className="absolute top-8 left-1/2 -translate-x-1/2 w-[320px] h-[200px] sm:w-[480px] sm:h-[260px] md:w-[620px] md:h-[320px]
-                        bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
-
-        {/* Contenido principal - z-index alto para que NO se tape */}
-        <div className="relative z-20 max-w-5xl mx-auto text-center">
-
+        <div className="relative z-10 max-w-4xl mx-auto text-center">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 text-xs font-medium mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full
+                          bg-indigo-600/15 border border-indigo-500/25
+                          text-indigo-400 text-xs font-medium mb-7 tracking-wide">
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse flex-shrink-0" />
             Grupo Estudiantil SPIE
           </div>
 
-          {/* Título - más visible y responsive */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-6 leading-[1.05]
-                         bg-gradient-to-b from-white via-white to-white/70 bg-clip-text text-transparent">
-            Concurso de Fotografía
+          {/* Title */}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-5 leading-[1.08]">
+            <span className="bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent">
+              Concurso de
+            </span>
+            <br />
+            <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-indigo-300 bg-clip-text text-transparent">
+              Fotografía
+            </span>
           </h1>
 
-          {/* Descripción */}
-          <p className="text-base sm:text-lg text-[#8b8ba8] max-w-2xl mx-auto mb-10 px-4">
+          {/* Subtitle */}
+          <p className="text-sm sm:text-base text-[#6b6b8a] max-w-lg mx-auto mb-9 leading-relaxed">
             Explora las categorías, descubre las mejores fotos y vota por tus favoritas.
           </p>
 
-          {/* Phasebanner centrado */}
+          {/* Phase banner */}
           <div className="flex justify-center">
             <Phasebanner phase={phase} />
           </div>
         </div>
       </section>
 
-      {/* Sección de Categorías - Aseguramos que use todo el ancho disponible */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 md:pb-24 relative z-10">
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
-          <h2 className="text-2xl sm:text-3xl font-semibold text-white/90">Categorías</h2>
-          <span className="text-sm text-[#8b8ba8] whitespace-nowrap">
+      {/* ── Divider ── */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+      </div>
+
+      {/* ── Categories ── */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-8">
+          <h2 className="text-xl sm:text-2xl font-semibold text-white/90">Categorías</h2>
+          <span className="text-xs text-[#6b6b8a]">
             {categories.length} categoría{categories.length !== 1 ? "s" : ""}
           </span>
         </div>
