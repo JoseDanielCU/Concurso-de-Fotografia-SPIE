@@ -93,55 +93,84 @@ export default function AdminDashboard() {
   if (loading) return <div className={styles.loading}>Cargando...</div>
 
   return (
-    <div>
-      <header className={styles.header}>
-        <h1 className={styles.title}>Dashboard</h1>
-        <p className={styles.subtitle}>Resumen del concurso y control de fases</p>
+  <main className="min-h-screen bg-[#080810] text-white px-4 sm:px-6 py-10">
+    <div className="max-w-5xl mx-auto">
+
+      {/* Header */}
+      <header className="mb-10">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-2">
+          Dashboard
+        </h1>
+        <p className="text-[#8b8ba8]">
+          Resumen del concurso y control de fases
+        </p>
       </header>
 
-      <div className={styles.statsGrid}>
-        <div className={styles.statCard}>
-          <span className={styles.statValue}>{stats.categories}</span>
-          <span className={styles.statLabel}>Categorías</span>
+      {/* Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center">
+          <span className="text-3xl font-bold">{stats.categories}</span>
+          <p className="text-sm text-[#8b8ba8] mt-1">Categorías</p>
         </div>
 
-        <div className={styles.statCard}>
-          <span className={styles.statValue}>{stats.participants}</span>
-          <span className={styles.statLabel}>Participantes</span>
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center">
+          <span className="text-3xl font-bold">{stats.participants}</span>
+          <p className="text-sm text-[#8b8ba8] mt-1">Participantes</p>
         </div>
 
-        <div className={styles.statCard}>
-          <span className={styles.statValue}>
-            {phase ? PHASE_LABELS[phase].split('—')[0] : '—'}
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center">
+          <span className="text-lg font-semibold">
+            {phase ? PHASE_LABELS[phase] : '—'}
           </span>
-          <span className={styles.statLabel}>Fase actual</span>
+          <p className="text-sm text-[#8b8ba8] mt-1">Fase actual</p>
         </div>
       </div>
 
-      <div className={styles.phaseCard}>
-        <h2>Control de Fase</h2>
+      {/* Phase control */}
+      <div className="bg-[#12121a] border border-white/10 rounded-2xl p-6">
+        <h2 className="text-xl font-semibold mb-6">
+          Control de Fase
+        </h2>
 
-        <div className={styles.phaseTimeline}>
-          {PHASE_ORDER.map((p, i) => (
-            <div
-              key={p}
-              className={`${styles.timelineStep} ${
-                phase === p ? styles.active : ''
-              } ${phase && isCompleted(p, phase) ? styles.completed : ''}`}
-            >
-              <div className={styles.timelineDot}>
-                {phase && isCompleted(p, phase) ? '✓' : i + 1}
+        {/* Timeline */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-8">
+          {PHASE_ORDER.map((p, i) => {
+            const active = phase === p
+            const completed = phase && isCompleted(p, phase)
+
+            return (
+              <div
+                key={p}
+                className={`flex-1 flex items-center gap-3 p-3 rounded-xl border transition
+                  ${active ? 'border-indigo-500 bg-indigo-500/10' : ''}
+                  ${completed ? 'border-green-500 bg-green-500/10' : 'border-white/10'}
+                `}
+              >
+                <div className={`w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold
+                  ${completed ? 'bg-green-500 text-white' : ''}
+                  ${active ? 'bg-indigo-500 text-white' : 'bg-white/10 text-white/60'}
+                `}>
+                  {completed ? '✓' : i + 1}
+                </div>
+
+                <span className="text-sm">
+                  {PHASE_LABELS[p]}
+                </span>
               </div>
-              <span>{PHASE_LABELS[p]}</span>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
+        {/* Button */}
         {phase && PHASE_NEXT[phase] && (
           <button
-            className="btn btn-primary"
             onClick={advancePhase}
             disabled={advancing}
+            className={`px-6 py-3 rounded-xl font-semibold text-sm transition
+              ${advancing
+                ? 'bg-white/10 text-white/40 cursor-not-allowed'
+                : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30'
+              }`}
           >
             {advancing
               ? 'Procesando...'
@@ -150,9 +179,11 @@ export default function AdminDashboard() {
         )}
 
         {phase === 'results' && (
-          <p>✓ Concurso finalizado</p>
+          <p className="text-green-400 text-sm mt-4">
+            ✓ Concurso finalizado
+          </p>
         )}
       </div>
     </div>
-  )
-}
+  </main>
+)}
